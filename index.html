@@ -5,6 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SIBAO CBT APP — Student Portal</title>
   <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png">
+  
+  <script>
+  window.MathJax = {
+    tex: { 
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    svg: { fontCache: 'global' },
+    options: {
+      renderActions: {
+        addMenu: [],
+        checkLoading: []
+      },
+      ignoreHtmlClass: 'tex2jax_ignore',
+      processHtmlClass: 'tex2jax_process'
+    },
+    messageStyle: "none",
+    errorSettings: { message: [""] }, 
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady();
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
   <style>
     :root {
       --primary: #0E5A38;
@@ -263,7 +290,7 @@
       background: var(--primary-light); padding: 4px 12px;
       border-radius: var(--radius-full); margin-bottom: var(--space-4);
     }
-    .question-text { font-size: var(--text-lg); line-height: 1.7; color: var(--text); margin-bottom: var(--space-6);  white-space: pre-wrap; /* <--- ADD THIS LINE */ }
+    .question-text { font-size: var(--text-lg); line-height: 1.7; color: var(--text); margin-bottom: var(--space-6); white-space: pre-wrap; }
     .question-image {
       max-width: 100%; max-height: 300px; object-fit: contain;
       border: none; border-radius: 0;
@@ -648,7 +675,7 @@
       border-radius: var(--radius); padding: var(--space-4); margin-top: var(--space-4);
     }
     .explanation-box h4 { font-size: var(--text-sm); color: var(--primary); margin-bottom: var(--space-2); display: flex; align-items: center; gap: 6px; }
-    .explanation-box p { font-size: var(--text-sm); color: var(--text); line-height: 1.6; }
+    .explanation-box p { font-size: var(--text-sm); color: var(--text); line-height: 1.6; white-space: pre-wrap; }
     .explanation-box img { max-width: 100%; max-height: 240px; border-radius: 0; border: none; margin-top: var(--space-3); pointer-events: none; user-select: none; }
     .result-review-badge {
       display: inline-flex; align-items: center; gap: 4px;
@@ -1012,12 +1039,12 @@
     .calc-key.eq { background: var(--primary); color: white; }
     .calc-key.eq:hover { background: var(--primary-hover); }
     .calc-key.clear { color: var(--danger); background: var(--danger-light); }
-    .calc-key.zero { width: calc(50% - 1px); } /* Makes 0 take up two spaces */    .calc-close {
+    .calc-key.zero { width: calc(50% - 1px); }
+    .calc-close {
       position: absolute; top: 10px; left: 10px; background: none; border: none;
       font-size: 20px; color: var(--text-muted); cursor: pointer; z-index: 10;
     }
-
-</style>
+  </style>
 </head>
 <body class="splash-locked">
 
@@ -1100,6 +1127,7 @@
   }
   rafId = requestAnimationFrame(draw);
   function stopParticles() { running = false; if (rafId) cancelAnimationFrame(rafId); }
+
   setTimeout(() => { splash.classList.add('finished'); }, 4200);
   setTimeout(() => {
     stopParticles();
@@ -1357,7 +1385,6 @@
 </div>
 
 <!-- CALCULATOR -->
-<!-- CALCULATOR -->
 <div class="calc-overlay" id="calcOverlay" onclick="closeCalc()"></div>
 <button class="calc-toggle" id="calcToggle" onclick="toggleCalc(event)" title="Calculator">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
@@ -1398,7 +1425,9 @@
     <button class="calc-key zero" onclick="calcInput('0')">0</button>
     <button class="calc-key" onclick="calcInput('.')">.</button>
   </div>
-</div><div class="modal-overlay" id="modal">
+</div>
+
+<div class="modal-overlay" id="modal">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-header">
       <h3 class="modal-title" id="modalTitle">Modal</h3>
@@ -1457,7 +1486,6 @@ window.dispatchEvent(new Event('firebase-ready'));
 
 <!-- MAIN APP -->
 <script>
-
 /* ===== CALCULATOR LOGIC ===== */
 let calcStr = '';
 function toggleCalc(e) {
@@ -1546,8 +1574,7 @@ const state = {
     mock: { mockId: null, subject: null, subjects: [], currentSubjectIndex: 0, currentQuestion: 1, totalQuestions: 40, timer: 120 * 60, answers: {}, flagged: new Set(), timerInterval: null, questionList: [], questionLists: {}, pendingMockId: null, mockInstructions: '', mockTitle: '', multiSubject: false, subjectTimers: null, timeMode: 'one', _submitted: false, _submitting: false }
   },
   wizard: {
-    
-step: 1, selectedSubjects: [], configs: {},
+    step: 1, selectedSubjects: [], configs: {},
     timeMode: 'one', questionOrder: 'grouped',
     globalTime: 40,
     searchQuery: '', openConfigId: null,
@@ -1847,7 +1874,6 @@ window.studentNav = function(view) {
     document.getElementById('studentSidebar').classList.remove('open');
     return;
   }
-  // FIX: don't push exam/instructions/review views to history
   const skipHistory = ['practice-exam', 'mock-exam', 'mock-instructions', 'review'];
   if (state.studentView && state.studentView !== view && !skipHistory.includes(state.studentView)) {
     state.viewHistory.push(state.studentView);
@@ -1871,7 +1897,7 @@ window.studentNav = function(view) {
     case 'help': content.innerHTML = renderStudentHelp(); break;
     default: content.innerHTML = renderStudentDashboard();
   }
-    if (view.endsWith('-exam') || view === 'review') document.body.classList.add('exam-mode');
+  if (view.endsWith('-exam') || view === 'review') document.body.classList.add('exam-mode');
   else document.body.classList.remove('exam-mode');
 
   const calcBtn = document.getElementById('calcToggle');
@@ -2060,7 +2086,7 @@ window.setWizardStep = function(step) {
 window.nextWizardStep = function() { window.setWizardStep(state.wizard.step + 1); };
 window.prevWizardStep = function() { window.setWizardStep(state.wizard.step - 1); };
 window.resetWizard = function() {
-  state.wizard = { step: 1, selectedSubjects: [], configs: {}, timeMode: 'one', questionOrder: 'grouped', globalTime: 40, searchQuery: '', openConfigId: null, shuffleQuestions: false, shuffleOptions: false };
+  state.wizard = { step: 1, selectedSubjects: [], configs: {}, timeMode: 'one', questionOrder: 'grouped', globalTime: 40, searchQuery: '', openConfigId: null, shuffleQuestions: true, shuffleOptions: true };
   renderWizard();
 };
 window.setWizardSearch = function(q) { state.wizard.searchQuery = q; renderWizard(); };
@@ -2121,7 +2147,7 @@ function renderWizardRail() {
   ];
   return steps.map(s => {
     const cls = state.wizard.step === s.n ? 'active' : (state.wizard.step > s.n ? 'done' : '');
-    return `<button class="practice-rail-item ${cls}" onclick="window.setWizardStep(${s.n})"><span class="pr-num">${state.wizard.step > s.n ? '?' : s.n}</span><span>${s.label}</span></button>`;
+    return `<button class="practice-rail-item ${cls}" onclick="window.setWizardStep(${s.n})"><span class="pr-num">${state.wizard.step > s.n ? '✓' : s.n}</span><span>${s.label}</span></button>`;
   }).join('');
 }
 
@@ -2150,7 +2176,7 @@ function renderWizardStep1() {
     <div class="pane-body">
       <div class="subject-chip-area" style="margin-bottom:var(--space-4);">
         ${selected.length === 0 ? `<span class="text-muted text-sm">No subjects yet — pick from the list below.</span>` :
-          selected.map(s => `<span class="subject-chip">${s.name}<span class="chip-x" onclick="event.stopPropagation(); window.removeSubject('${s.id}')">?</span></span>`).join('')}
+          selected.map(s => `<span class="subject-chip">${s.name}<span class="chip-x" onclick="event.stopPropagation(); window.removeSubject('${s.id}')">✕</span></span>`).join('')}
       </div>
       <div class="subject-search-wrap">
         ${ICONS.search}
@@ -2325,7 +2351,7 @@ function renderWizardStep2() {
           return `
             <div class="subject-config-item">
               <div class="subject-config-head ${isOpen ? 'open' : ''}" onclick="window.toggleSubjectConfig('${s.id}')">
-                <div><div class="sch-name">${s.name}</div><div class="sch-topics">${cfg.topics.length} topics selected · ${cfg.questions} questions · ${cfg.year === 'all' ? 'All years' : cfg.year}</div></div>
+                <div><div class="sch-name">${s.name}</div><div class="sch-topics">${cfg.topics.length} topics selected • ${cfg.questions} questions • ${cfg.year === 'all' ? 'All years' : cfg.year}</div></div>
                 <span class="sch-chevron">${ICONS.chevronDown}</span>
               </div>
               <div class="subject-config-body ${isOpen ? 'open' : ''}">
@@ -2417,7 +2443,7 @@ function renderWizardStep4() {
       <div class="review-subject-table">
         ${w.selectedSubjects.map(s => {
           const cfg = w.configs[s.id] || { questions: 40, year: 'all' };
-          const yearLabel = cfg.year && cfg.year !== 'all' ? ' · ' + cfg.year : '';
+          const yearLabel = cfg.year && cfg.year !== 'all' ? ' • ' + cfg.year : '';
           return `<div class="review-subject-row"><span class="rs-name">${s.name}</span><span class="rs-meta">${cfg.questions} Q${yearLabel}</span></div>`;
         }).join('')}
       </div>
@@ -2460,7 +2486,6 @@ function renderWizard() {
   `;
 }
 
-/* FIXED: startPracticeFromWizard — reset submit flags, topic filter only when narrowed */
 window.startPracticeFromWizard = function() {
   if (!state.currentUser) { window.openLoginPage(); return; }
   const w = state.wizard;
@@ -2499,7 +2524,6 @@ window.startPracticeFromWizard = function() {
       .map(([id, q]) => ({ id, ...q }))
       .filter(q => (q.subject || '').toLowerCase() === subj.name.toLowerCase());
 
-    // FIX: topic filter only active when the user narrowed below all topics
     const subjMeta = state.subjects.find(x => x.id === subj.id);
     const allTopicsForSubject = subjMeta?.topics || [];
     const userTopics = subj.topics || [];
@@ -2640,7 +2664,7 @@ function renderMockExamRoom(exam) {
 
   const totalAnswered = Object.keys(exam.answers).length;
 
-  return `
+  let html = `
     <div class="fade-in">
       <div class="exam-topbar">
         <div class="exam-info">
@@ -2655,15 +2679,16 @@ function renderMockExamRoom(exam) {
       ${tabsHTML ? `<div class="subject-tabs">${tabsHTML}</div>` : ''}
       <div class="exam-layout">
         <div>
-           <div class="question-card">
+          <div class="question-card">
             <div class="question-number">${questionLabel}</div>
             
-            ${q.section ? `<div style="font-weight:700; color:var(--primary); margin-bottom:8px;">${esc(q.section)}</div>` : ''}
+            ${/* 🎯 FIX: Hide section for Math to stop duplication */ ''}
+            ${(q.section && !String(subjectName).toLowerCase().includes('math')) ? `<div style="font-weight:700; color:var(--primary); margin-bottom:8px;">${esc(q.section)}</div>` : ''}
             
-            ${q.passage ? `<div style="background:var(--bg); border-left:4px solid var(--primary); padding:16px; border-radius:8px; margin-bottom:20px; font-size:15px; line-height:1.7; color:#333; font-style:italic;">${esc(q.passage)}</div>` : ''}
+            ${(q.passage && q.passage !== q.section) ? `<div style="background:var(--bg); border-left:4px solid var(--primary); padding:16px; border-radius:8px; margin-bottom:20px; font-size:15px; line-height:1.7; color:#333; font-style:italic;">${esc(q.passage)}</div>` : ''}
             
             ${q.image ? `<img class="question-image" src="${q.image}" alt="Question image" onerror="this.style.display='none'">` : ''}
-                        <div class="question-text">${esc(q.text || '')}</div>
+            <div class="question-text">${esc(q.text || '')}</div>
             <div class="options-list">
               ${optionOrder.map((origIdx, displayIdx) => {
                 const optText = options[origIdx] || '';
@@ -2701,6 +2726,14 @@ function renderMockExamRoom(exam) {
       </div>
     </div>
   `;
+  
+  setTimeout(() => {
+    if (window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise().catch(err => console.log('MathJax error:', err));
+    }
+  }, 150);
+  
+  return html;
 }
 
 window.selectAnswerForMock = function(originalIndex) {
@@ -2813,7 +2846,7 @@ function renderPracticeExamRoom(exam) {
     }).join('');
   }
 
-  return `
+  let html = `
     <div class="fade-in">
       <div class="exam-topbar">
         <div class="exam-info">
@@ -2831,9 +2864,9 @@ function renderPracticeExamRoom(exam) {
           <div class="question-card">
             <div class="question-number">${questionLabel}</div>
             
-            ${q.section ? `<div style="font-weight:700; color:var(--primary); margin-bottom:8px;">${esc(q.section)}</div>` : ''}
+            ${(q.section && !String(subjectName).toLowerCase().includes('math')) ? `<div style="font-weight:700; color:var(--primary); margin-bottom:8px;">${esc(q.section)}</div>` : ''}
             
-            ${q.passage ? `<div style="background:var(--bg); border-left:4px solid var(--primary); padding:16px; border-radius:8px; margin-bottom:20px; font-size:15px; line-height:1.7; color:#333; font-style:italic;">${esc(q.passage)}</div>` : ''}
+            ${(q.passage && q.passage !== q.section) ? `<div style="background:var(--bg); border-left:4px solid var(--primary); padding:16px; border-radius:8px; margin-bottom:20px; font-size:15px; line-height:1.7; color:#333; font-style:italic;">${esc(q.passage)}</div>` : ''}
             
             ${q.image ? `<img class="question-image" src="${q.image}" alt="Question image" onerror="this.style.display='none'">` : ''}
             <div class="question-text">${esc(q.text || '')}</div>
@@ -2871,6 +2904,14 @@ function renderPracticeExamRoom(exam) {
       </div>
     </div>
   `;
+  
+  setTimeout(() => {
+    if (window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise().catch(err => console.log('MathJax error:', err));
+    }
+  }, 150);
+  
+  return html;
 }
 
 function getPracticeQuestion(exam) {
@@ -2957,7 +2998,6 @@ function startExamTimerFor(type) {
   }, 1000);
 }
 
-/* FIXED: no double submit */
 window.autoSubmitFor = function(type) {
   const exam = getExam(type);
   if (exam._submitting || exam._submitted) return;
@@ -3006,7 +3046,6 @@ window.quitExam = function(type, backView) {
   window.studentNav(backView);
 };
 
-/* FIXED: submit guard */
 window.submitExamFor = async function(type) {
   const exam = getExam(type);
   if (exam._submitted) return;
@@ -3029,7 +3068,7 @@ window.submitExamFor = async function(type) {
     multiSubject: false
   };
 
-  const mapQuestion = (q) => ({
+    const mapQuestion = (q) => ({
     id: q.id || null,
     text: q.text || '',
     options: q.options || [],
@@ -3039,7 +3078,9 @@ window.submitExamFor = async function(type) {
     optionImages: q.optionImages || [],
     explanationImage: q.explanationImage || null,
     subject: q.subject || '',
-    topic: q.topic || ''
+    topic: q.topic || '',
+    section: q.section || '',
+    passage: q.passage || ''
   });
 
   let scoreCorrect = 0;
@@ -3161,37 +3202,43 @@ window.openReview = function(resultId) {
   const answers = result.answers || {};
   let snapshot = result.snapshot;
 
-  if (!snapshot || (!snapshot.questionList && !snapshot.questionLists)) {
+   if (!snapshot || (!snapshot.questionList && !snapshot.questionLists)) {
     const subjectNames = (result.subject || '').split(',').map(s => s.trim()).filter(Boolean);
 
-    // FIX: legacy multi-subject correction guard
     if (subjectNames.length > 1) {
       window.openModal('Correction Unavailable',
-        `<p class="text-muted">This result was created before correction snapshots were saved and covers multiple subjects. The correction can't be rebuilt reliably.</p>`,
+        `<p class="text-muted">This result was saved before correction snapshots were enabled and covers multiple subjects. The correction can't be rebuilt reliably.</p>
+         <p class="mt-3 text-muted">Please take a new test to see the correction.</p>`,
         [{ label: 'OK', class: 'btn-primary', action: 'window.closeModal()' }]);
       return;
     }
 
-    const allQs = Object.values(state.allQuestions).map(q => ({ ...q }));
+    // 🎯 FIX: Only rebuild exactly the number of questions the student took,
+    // NOT the entire subject bank.
+    const subject = subjectNames[0] || '';
+    const targetCount = result.total || 0;
 
-    let rebuiltQuestions = [];
-    if (subjectNames.length > 0) {
-      rebuiltQuestions = allQs.filter(q => subjectNames.includes((q.subject || '').trim()));
-    } else {
-      rebuiltQuestions = allQs;
+    let allQs = Object.values(state.allQuestions).map(q => ({ ...q }));
+
+    if (subject) {
+      allQs = allQs.filter(q => (q.subject || '').trim().toLowerCase() === subject.toLowerCase());
     }
 
-    if (rebuiltQuestions.length === 0) {
+    if (allQs.length === 0) {
       window.openModal('Correction Unavailable',
         `<p class="text-muted">We could not rebuild this correction because there are no questions in the bank for this subject.</p>`,
         [{ label: 'OK', class: 'btn-primary', action: 'window.closeModal()' }]);
       return;
     }
 
+    // Slice to the number of questions actually in the result
+    const rebuiltQuestions = targetCount > 0 ? allQs.slice(0, targetCount) : allQs;
+
     const cleanedQuestions = rebuiltQuestions.map(q => ({
       id: q.id, text: q.text, options: q.options, correct: q.correct,
       explanation: q.explanation, image: q.image, optionImages: q.optionImages,
-      explanationImage: q.explanationImage, subject: q.subject, topic: q.topic
+      explanationImage: q.explanationImage, subject: q.subject, topic: q.topic,
+      section: q.section || '', passage: q.passage || ''   // 🎯 ADD THIS LINE
     }));
 
     const normalizedAnswers = {};
@@ -3355,20 +3402,19 @@ function renderReview() {
       </div>
     `;
   } else {
-    explanationHTML = `
-      <div class="explanation-box" style="background:var(--bg);border-left-color:var(--border);">
-        <h4 style="color:var(--text-muted);">Explanation</h4>
-        <p class="text-muted">No explanation provided for this question.</p>
-      </div>
-    `;
+    explanationHTML = '';
   }
 
-  return `
+  // 🎯 FIX: Check if the subject is Math to avoid showing duplicate sections
+  const isMath = String(subjectName).toLowerCase().includes('math');
+  const sectionToShow = (q.section && !isMath) ? q.section : '';
+
+  let html = `
     <div class="fade-in review-mode">
       <div class="section-header">
         <div>
           <h2>Correction — ${esc(rv.result.type === 'practice' ? 'Practice' : 'Mock')}</h2>
-          <p class="text-muted text-sm">${esc(rv.result.subject || '')} · ${esc(rv.result.date || '')} · ${esc(rv.result.score || '')}</p>
+          <p class="text-muted text-sm">${esc(rv.result.subject || '')} • ${esc(rv.result.date || '')} • ${esc(rv.result.score || '')}</p>
         </div>
         <div class="flex gap-2">
           <button class="btn btn-secondary btn-sm" onclick="window.studentNav('results')">${ICONS.arrowLeft} Back to Results</button>
@@ -3389,8 +3435,14 @@ function renderReview() {
               ${statusText}
             </span>
           </div>
+          
+          ${/* 🎯 FIX: Render Section and Passage */ ''}
+          ${sectionToShow ? `<div style="font-weight:700; color:var(--primary); margin-bottom:8px;">${esc(sectionToShow)}</div>` : ''}
+          
+          ${(q.passage && q.passage !== sectionToShow) ? `<div style="background:var(--bg); border-left:4px solid var(--primary); padding:16px; border-radius:8px; margin-bottom:20px; font-size:15px; line-height:1.7; color:#333; font-style:italic;">${esc(q.passage)}</div>` : ''}
+
           ${q.image ? `<img class="question-image" src="${q.image}" alt="Question image" onerror="this.style.display='none'">` : ''}
-          <div class="question-text">${q.text || ''}</div>
+          <div class="question-text">${esc(q.text || '')}</div>
           <div class="options-list">
             ${optionIndices.map(i => {
               const opt = options[i] || '';
@@ -3422,6 +3474,16 @@ function renderReview() {
       </div>
     </div>
   `;
+
+  setTimeout(() => {
+    if (window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise().then(() => {
+        document.querySelectorAll('merror, .merror, mjx-merror').forEach(e => e.style.display = 'none');
+      }).catch(err => console.log('MathJax error:', err));
+    }
+  }, 150);
+
+  return html;
 }
 
 window.gotoReview = function(idx) {
@@ -3733,9 +3795,9 @@ function renderStudentMock() {
           <div class="mock-card-info">
             <div class="mock-card-title">${m.title}</div>
             <div class="mock-card-meta">
-              <span>?? ${esc(subjectText)}</span>
-              <span>? ${m.questions || 0} questions</span>
-              <span>? ${m.duration || '45 min'}</span>
+              <span>📚 ${esc(subjectText)}</span>
+              <span>❓ ${m.questions || 0} questions</span>
+              <span>⏱ ${m.duration || '45 min'}</span>
               <span class="badge ${m.status === 'published' ? 'badge-success' : 'badge-warning'}">${m.status || 'draft'}</span>
               ${m.end && m.end !== '—' ? `<span class="badge badge-warning">Ends ${esc(m.end)}</span>` : ''}
             </div>
@@ -3879,7 +3941,7 @@ function renderMockInstructions() {
         </div>
         <div class="instructions-card">
           <h3>${mock.title || 'Mock Exam'}</h3>
-          <p class="text-muted text-sm mb-4">${esc(subjectText)} · ${mock.questions || 0} questions · ${mock.duration || '45 min'}</p>
+          <p class="text-muted text-sm mb-4">${esc(subjectText)} • ${mock.questions || 0} questions • ${mock.duration || '45 min'}</p>
           <div class="instructions-list">
             ${instructionsHTML}
           </div>
@@ -3895,22 +3957,42 @@ function renderMockInstructions() {
 
 function esc(s) {
   if (s == null) return '';
-  // Safely allow <br>, <b>, <i>, and <u> to render properly
-  const allowedTags = /<(\/?)(br|b|i|u)\s*\/?>/gi;
-  const placeholders = [];
   
-  // Temporarily replace allowed tags with a placeholder
-  let clean = String(s).replace(allowedTags, (match) => {
-    placeholders.push(match);
-    return `___TAG_${placeholders.length - 1}___`;
+  let clean = String(s);
+
+  // 1. Remove HTML comments
+  clean = clean.replace(/<!--.*?-->/g, ''); 
+  
+  // 2. Fix typos
+  clean = clean.replace(/simolify/gi, 'Simplify');
+
+  // 3. Decode common HTML entities so they show as actual text
+  const entityMap = {
+    '&#x2212;': '−', '&#x2213;': '∓', '&#x00D7;': '×', '&#x00F7;': '÷',
+    '&#x221A;': '√', '&#x3C0;': 'π', '&#x221E;': '∞', '&#x2260;': '≠',
+    '&#x2264;': '≤', '&#x2265;': '≥', '&#x2211;': '∑', '&#x222B;': '∫',
+    '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'", '&nbsp;': ' '
+  };
+  clean = clean.replace(/&#x[0-9a-fA-F]+;|&[a-zA-Z]+;|&#\d+;/g, (match) => {
+    return entityMap[match] || match;
   });
 
-  // Escape everything else
-  clean = clean.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  // 4. Aggressively strip out any remaining broken MathML or HTML tags
+  // This removes things like "3.org/1998/Math/MathML">", <math>, <mrow>, <mn>, etc.
+  clean = clean.replace(/<[^>]*>/g, ''); // Removes HTML tags
+  clean = clean.replace(/[a-zA-Z0-9.-]*\.org\/[^\s]+/g, ''); // Removes broken xmlns URLs
+  clean = clean.replace(/="false">/g, ''); // Removes broken MathML attributes
+  clean = clean.replace(/<m[a-z]+[^>]*>/gi, '').replace(/<\/m[a-z]+>/gi, ''); // Removes MathML tags
 
-  // Put the allowed tags back so the browser renders them
-  clean = clean.replace(/___TAG_(\d+)___/g, (match, index) => placeholders[index]);
-  
+  // 5. Clean up the line breaks for explanations
+  clean = clean.replace(/([^\n])\s*=\s*/g, '$1<br>= ');
+  clean = clean.replace(/\b(Thus|Therefore|So|Hence|Since|But|Members|this x|=>)\b/g, '<br>$1');
+  clean = clean.replace(/(<br>\s*){2,}/g, '<br><br>');
+  clean = clean.replace(/^\s*<br>/, '');
+
+  // 6. Remove any leftover random multiple spaces
+  clean = clean.replace(/[ \t]+/g, ' ');
+
   return clean;
 }
 
@@ -3925,9 +4007,6 @@ window.closeModal = function() { document.getElementById('modal').classList.remo
 document.getElementById('modal').addEventListener('click', e => { if (e.target.id === 'modal') window.closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') window.closeModal(); });
 
-/* =========================================================
-   FIXED: loadQuestions — read option_images correctly
-   ========================================================= */
 function loadQuestions() {
   if (!window.__fbOnValue) return;
   window.__fbOnValue(window.__fbRef(window.__fbDb, 'jamb_questions'), snap => {
@@ -3935,26 +4014,39 @@ function loadQuestions() {
     const converted = {};
 
     Object.entries(raw).forEach(([id, q]) => {
-      // Build options array — only non-empty A–E, text only
       const opts = [];
       const optImgs = [];
       ['a','b','c','d','e'].forEach((letter, i) => {
         const val = q['option_' + letter];
         if (val && String(val).trim()) {
           opts.push(letter.toUpperCase() + ') ' + String(val).trim());
-          // Align image by the SAME letter position (0..4)
           optImgs.push((q.option_images && q.option_images[i]) || null);
         }
       });
 
+      let subjectName = q.subject || 'General';
+      let sectionText = q.section || q.instruction || '';
+      let questionText = q.question || '';
+      let passageText = q.passage || q.comprehension || q.comprehension_passage || '';
+
+      // 🎯 FIX: For Math, if the section is exactly the same as the question, remove the section
+      if (subjectName.toLowerCase().includes('math')) {
+        if (sectionText.trim() === questionText.trim()) {
+          sectionText = '';
+        }
+      }
+
       converted[id] = {
         id: id,
-        text: q.question || '',
-        subject: q.subject || 'General',
+        text: questionText,
+        subject: subjectName,
         topic: q.topic || '',
         year: String(q.year || ''),
-        section: q.section || '',       // <-- ADD THIS
-        passage: q.passage || '',       // <-- ADD THIS
+        
+        // Store the cleaned section and passage
+        passage: passageText,
+        section: sectionText,       
+        
         options: opts,
         optionImages: optImgs,
         correct: (q.answer || 'A').toUpperCase(),
@@ -4086,5 +4178,16 @@ if (document.readyState === 'loading') {
   bootApp();
 }
 </script>
+
+<!-- JANITOR SCRIPT TO HIDE ERRORS -->
+<script>
+  setInterval(() => {
+    document.querySelectorAll('merror, .merror, mjx-merror, [data-mjx-error]').forEach(e => {
+      e.style.display = 'none';
+      e.innerHTML = '';
+    });
+  }, 300);
+</script>
+
 </body>
 </html>
